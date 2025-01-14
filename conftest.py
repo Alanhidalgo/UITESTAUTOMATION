@@ -58,3 +58,11 @@ def navigate_to_class_attribute(request):
     url = "http://uitestingplayground.com/classattr"
     request.cls.driver.get(url)
     return url
+
+# fixture para navegar a UI Test Automation - load delays
+@pytest.fixture
+def navigate_to_load_delays(request):
+    # Usa el driver que está en request.cls.driver
+    url = "http://uitestingplayground.com/loaddelay"
+    request.cls.driver.get(url)
+    return url
