@@ -66,3 +66,11 @@ def navigate_to_load_delays(request):
     url = "http://uitestingplayground.com/loaddelay"
     request.cls.driver.get(url)
     return url
+
+# fixture para navegar a UI Test Automation - ajax data
+@pytest.fixture
+def navigate_to_ajax_data(request):
+    # Usa el driver que está en request.cls.driver
+    url = "http://uitestingplayground.com/ajax"
+    request.cls.driver.get(url)
+    return url
