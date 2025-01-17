@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.remote.webelement import WebElement
 
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="chrome", help="Navegador para las pruebas: chrome o firefox")
@@ -18,7 +19,7 @@ def setup_method(request):
     if browser == "chrome":
         options = ChromeOptions()
         # Descomentar la siguiente línea para ejecutar en modo headless (sin interfaz gráfica)
-        options.add_argument("--headless")
+        # options.add_argument("--headless")
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
     else:
@@ -30,6 +31,18 @@ def setup_method(request):
     request.cls.wait = WebDriverWait(driver, 10)  # Espera explícita configurada a 10 segundos
     yield driver
     driver.quit()
+
+# Limpieza de campos para manejar tanto listas como elementos individuales
+@pytest.fixture(scope="session")
+def clear_fields():
+    def _clear_fields(fields):
+        # Si se pasa un único elemento en lugar de una lista
+        if isinstance(fields, WebElement):
+            fields = [fields]  # Convierte el elemento en una lista
+        for field in fields:
+            if field.get_attribute("value"):
+                field.clear()
+    return _clear_fields
 
 # fixture para navegar a google.com
 @pytest.fixture
@@ -72,5 +85,13 @@ def navigate_to_load_delays(request):
 def navigate_to_ajax_data(request):
     # Usa el driver que está en request.cls.driver
     url = "http://uitestingplayground.com/ajax"
+    request.cls.driver.get(url)
+    return url
+
+# fixture para navegar a UI Test Automation - textinput
+@pytest.fixture
+def navigate_to_text_input(request):
+    # Usa el driver que está en request.cls.driver
+    url = "http://uitestingplayground.com/textinput"
     request.cls.driver.get(url)
     return url
